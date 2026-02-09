@@ -1,0 +1,233 @@
+/* ========================================
+   NEURO-EVOLUTION SIMULATION
+   Premium Dark Theme Styles
+   ======================================== */
+
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-tertiary: #1a1a25;
+    --accent-primary: #00f5ff;
+    --accent-secondary: #7b2cbf;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0b0;
+    --font-display: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Status Bar & Indicators */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffbe0b;
+    animation: statusPulse 2s infinite;
+}
+
+.status-indicator.connected {
+    background: #00ff88 !important;
+}
+
+.status-indicator.error {
+    background: #ff4444 !important;
+}
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+/* Modal Styling */
+.modal {
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: var(--bg-tertiary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animations */
+@keyframes dnaRotate {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes dnaPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.3);
+    }
+}
+
+@keyframes progressLoad {
+    0% {
+        width: 0%;
+    }
+
+    50% {
+        width: 70%;
+    }
+
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes brainPulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Specific Component Styles not covered by Bootstrap */
+.dna-strand {
+    animation: dnaRotate 2s linear infinite;
+}
+
+.dna-strand::before,
+.dna-strand::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    animation: dnaPulse 1s ease-in-out infinite alternate;
+}
+
+.dna-strand::before {
+    background: var(--accent-primary);
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+}
+
+.dna-strand::after {
+    background: var(--accent-secondary);
+    bottom: 0;
+    right: 0;
+    box-shadow: 0 0 20px rgba(123, 44, 191, 0.3);
+    animation-delay: 0.5s;
+}
+
+.dna-strand:nth-child(2) {
+    animation-delay: -1s;
+}
+
+.progress-fill {
+    animation: progressLoad 2s ease-out forwards;
+}
+
+.brain-wave {
+    animation: brainPulse 2s ease-in-out infinite;
+}
+
+.brain-wave:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.brain-wave:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Custom Overrides for Bootstrap Components to match theme */
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border: none;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.form-range::-webkit-slider-thumb {
+    background: var(--accent-primary);
+}
+
+.form-range::-moz-range-thumb {
+    background: var(--accent-primary);
+}
+
+/* Glassmorphism for cards */
+.card {
+    backdrop-filter: blur(10px);
+}
+
+/* Collapse icon rotation */
+.collapse-icon {
+    transition: transform 0.3s ease;
+}
+
+.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+}
+
+/* State Utilities */
+.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.collapsed .config-content {
+    display: none !important;
+}
+
+#loading-screen.hidden {
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
