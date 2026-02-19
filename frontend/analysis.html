@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro-Evolution | Advanced Analytics</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- UI Frameworks -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="bg-darker text-light">
+    <!-- Analysis View -->
+    <div id="analysis-view" class="metrics-view">
+        <header class="metrics-header">
+            <div>
+                <h1 class="landing-title display-4 mb-2">NEURAL ANALYSIS</h1>
+                <p class="text-muted uppercase-spaced" style="letter-spacing: 4px;">Standalone Diagnostic Environment
+                </p>
+            </div>
+            <div class="d-flex gap-3">
+                <div id="sync-status"
+                    class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 d-flex align-items-center gap-2">
+                    <div class="status-indicator connected"></div>
+                    LIVE SYNC ACTIVE
+                </div>
+                <a href="index.html" class="btn btn-outline-info px-4">
+                    Return to Simulation
+                </a>
+            </div>
+        </header>
+
+        <section class="metric-highlight-grid">
+            <div class="highlight-item">
+                <div class="highlight-label">Active Generation</div>
+                <div class="highlight-value" id="analysis-generation">0</div>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-label">Peak Performance</div>
+                <div class="highlight-value" id="analysis-best">0.0</div>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-label">Neural Health</div>
+                <div class="highlight-value" id="analysis-rate" style="color: var(--accent-success);">Optimal</div>
+            </div>
+            <div class="highlight-item">
+                <div class="highlight-label">Sensor Input Streams</div>
+                <div class="highlight-value">9 Channel</div>
+            </div>
+        </section>
+
+        <main class="metrics-grid">
+            <div class="analysis-card">
+                <h2 class="analysis-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-primary)">
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    </svg>
+                    Best Agent: Neural Architecture
+                </h2>
+                <div class="nn-container-large">
+                    <canvas id="nn-canvas-analysis" class="w-100 h-100"></canvas>
+                </div>
+            </div>
+            <div class="analysis-card">
+                <h2 class="analysis-title">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--accent-primary)">
+                        <path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z" />
+                    </svg>
+                    Evolutionary Fitness Tracking
+                </h2>
+                <div class="chart-container-large">
+                    <canvas id="fitness-chart-analysis" class="w-100 h-100"></canvas>
+                </div>
+                <div class="mt-4 p-4 rounded-4 bg-white bg-opacity-5 border border-white border-opacity-5">
+                    <div class="uppercase-spaced text-muted tiny-label mb-3">Evolutionary Event Log</div>
+                    <div class="diagnostic-log-container"
+                        style="max-height: 150px; overflow-y: auto; padding-right: 10px;">
+                        <div class="small font-monospace text-secondary" id="analysis-log" style="line-height: 1.6;">
+                            > Establishing secure link to simulation core...<br>
+                            > Handshake complete. Waiting for generational data...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/nn-visualizer.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // Standalone Analytics Controller
+        class AnalyticsPage {
+            constructor() {
+                this.nnVisualizer = new NNVisualizer('nn-canvas-analysis');
+                this.dashboard = new Dashboard(); // Reusing Dashboard logic for the chart
+                this.init();
+            }
+
+            async init() {
+                console.log('📊 Standalone Analytics Environment Initialized');
+                this.poll();
+                setInterval(() => this.poll(), 2000); // Poll every 2 seconds
+            }
+
+            async poll() {
+                try {
+                    // 1. Get Simulation Status
+                    const status = await api.getStatus();
+
+                    document.getElementById('analysis-generation').textContent = status.generation;
+                    document.getElementById('analysis-best').textContent = Utils.formatNumber(status.best_fitness || 0, 1);
+
+                    // 2. Update Fitness History (Simplified approach for now)
+                    // If the simulation is running, we want the full history
+                    // For now, let's just use the current stats as we can't easily get 
+                    // the full history without a dedicated endpoint or persistence.
+                    // But we can update the chart with the current data.
+                    if (status.best_fitness !== undefined) {
+                        this.dashboard.addFitnessData(status.best_fitness, status.average_fitness || 0);
+                    }
+
+                    // 3. Get Neural Network Genome
+                    const genome = await api.getBestGenome();
+                    if (genome) {
+                        this.nnVisualizer.setGenome(genome);
+                    }
+
+                    this.addLogEntry(`Status update received: Gen ${status.generation} | Best: ${Utils.formatNumber(status.best_fitness || 0, 2)}`);
+                    this.updateSyncStatus(true);
+                } catch (e) {
+                    console.error('Sync failed:', e);
+                    this.updateSyncStatus(false);
+                }
+            }
+
+            updateSyncStatus(connected) {
+                const el = document.getElementById('sync-status');
+                if (connected) {
+                    el.className = 'badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 d-flex align-items-center gap-2';
+                    el.innerHTML = '<div class="status-indicator connected"></div> LIVE SYNC ACTIVE';
+                } else {
+                    el.className = 'badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3 py-2 d-flex align-items-center gap-2';
+                    el.innerHTML = '<div class="status-indicator error"></div> SYNC LOST';
+                }
+            }
+
+            addLogEntry(msg) {
+                const log = document.getElementById('analysis-log');
+                if (log) {
+                    const time = new Date().toLocaleTimeString();
+                    const newEntry = `> [${time}] ${msg}<br>`;
+                    log.innerHTML = newEntry + log.innerHTML.split('<br>').slice(0, 50).join('<br>');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.analytics = new AnalyticsPage();
+        });
+    </script>
+</body>
+
+</html>
